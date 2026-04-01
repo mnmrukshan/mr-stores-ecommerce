@@ -7,6 +7,9 @@ import CategoryFilter from './components/CategoryFilter';
 import Cart from './components/Cart';
 import Footer from './components/Footer';
 import ProductModal from './components/ProductModal';
+import About from './components/About';
+import Contact from './components/Contact';
+import Login from './components/Login';
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -14,6 +17,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -31,6 +35,10 @@ function App() {
     });
     // Open cart automatically when an item is added
     setIsCartOpen(true);
+  };
+
+  const removeFromCart = (id, size) => {
+    setCartItems((prevItems) => prevItems.filter(item => !(item.id === id && item.size === size)));
   };
 
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
@@ -52,6 +60,8 @@ function App() {
         setActiveTab={setActiveTab}
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
       />
       
       <main className="flex-grow flex flex-col items-center w-full">
@@ -59,7 +69,7 @@ function App() {
           <div className="w-full">
             <Hero />
             <div className="mt-12 w-full max-w-[1600px] mx-auto pb-24">
-                <ProductGrid onProductClick={setSelectedProduct} selectedCategory="All" />
+                <ProductGrid onProductClick={setSelectedProduct} selectedCategory="All" searchQuery={searchQuery} />
                 <div className="flex justify-center mt-12 w-full">
                   <button 
                     onClick={() => setActiveTab('shop')}
@@ -79,9 +89,14 @@ function App() {
                 <p className="text-[#888] tracking-widest text-sm">Fine collections for boys.</p>
             </div>
             <CategoryFilter selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
-            <ProductGrid onProductClick={setSelectedProduct} selectedCategory={selectedCategory} />
+            <ProductGrid onProductClick={setSelectedProduct} selectedCategory={selectedCategory} searchQuery={searchQuery} />
           </div>
         )}
+
+        {activeTab === 'about' && <About />}
+        {activeTab === 'contact' && <Contact />}
+        {activeTab === 'login' && <Login />}
+
       </main>
 
       <Footer />
@@ -90,6 +105,7 @@ function App() {
         isOpen={isCartOpen} 
         setIsOpen={setIsCartOpen} 
         cartItems={cartItems} 
+        removeFromCart={removeFromCart}
       />
 
       <ProductModal 
