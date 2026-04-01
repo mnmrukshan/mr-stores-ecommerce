@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Cart = ({ isOpen, setIsOpen, cartItems }) => {
+const Cart = ({ isOpen, setIsOpen, cartItems, removeFromCart }) => {
   if (!isOpen) return null;
 
   const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
@@ -45,7 +45,16 @@ const Cart = ({ isOpen, setIsOpen, cartItems }) => {
             </div>
           ) : (
             cartItems.map((item) => (
-              <div key={item.id} className="flex space-x-4 bg-white/5 p-3 rounded-xl border border-white/5">
+              <div key={`${item.id}-${item.size}`} className="flex space-x-4 bg-white/5 p-3 rounded-xl border border-white/5 relative pr-8">
+                <button 
+                  onClick={() => removeFromCart(item.id, item.size)}
+                  className="absolute top-3 right-3 text-gray-500 hover:text-red-400 transition-colors p-1"
+                  title="Remove item"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
                 <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded-lg" />
                 <div className="flex-grow flex flex-col justify-between">
                   <div>

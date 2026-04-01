@@ -2,10 +2,12 @@ import React from 'react';
 import ProductCard from './ProductCard';
 import productsData from '../data/products.json';
 
-const ProductGrid = ({ onProductClick, selectedCategory = 'All' }) => {
-  const filteredProducts = selectedCategory === 'All' 
-    ? productsData 
-    : productsData.filter(p => p.category.toLowerCase() === selectedCategory.toLowerCase());
+const ProductGrid = ({ onProductClick, selectedCategory = 'All', searchQuery = '' }) => {
+  const filteredProducts = productsData.filter(p => {
+    const matchesCategory = selectedCategory === 'All' || p.category.toLowerCase() === selectedCategory.toLowerCase();
+    const matchesSearch = p.name.toLowerCase().includes((searchQuery || '').toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   const title = selectedCategory === 'All' ? 'Featured collection' : selectedCategory;
 
