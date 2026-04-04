@@ -10,14 +10,36 @@ import ProductModal from './components/ProductModal';
 import About from './components/About';
 import Contact from './components/Contact';
 import Login from './components/Login';
+import AdminDashboard from './components/AdminDashboard';
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('home');
+  const [activeTab, setActiveTab] = useState('login');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+      setActiveTab('home');
+    }
+  }, []);
+
+  const handleLoginSuccess = (userData) => {
+    setUser(userData);
+    localStorage.setItem('user', JSON.stringify(userData));
+    setActiveTab('home');
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem('user');
+    setActiveTab('login');
+  };
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -41,6 +63,10 @@ function App() {
     setCartItems((prevItems) => prevItems.filter(item => !(item.id === id && item.size === size)));
   };
 
+  const clearCart = () => {
+    setCartItems([]);
+  };
+
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
@@ -51,20 +77,24 @@ function App() {
         <div className="absolute bottom-[-10%] -right-[10%] w-[40%] h-[40%] bg-gradient-radial from-[#e6394610] to-transparent rounded-full blur-3xl opacity-30"></div>
       </div>
 
-      <TopBar />
+      {activeTab !== 'login' && <TopBar />}
       
-      <Navbar 
-        cartCount={totalItems} 
-        setIsCartOpen={setIsCartOpen} 
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-      />
+      {activeTab !== 'login' && (
+        <Navbar 
+          cartCount={totalItems} 
+          setIsCartOpen={setIsCartOpen} 
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          user={user}
+          onLogout={handleLogout}
+        />
+      )}
       
-      <main className="flex-grow flex flex-col items-center w-full">
+      <main className={`flex-grow flex w-full ${activeTab !== 'login' ? 'flex-col items-center' : ''}`}>
         {activeTab === 'home' && (
           <div className="w-full">
             <Hero />
@@ -95,17 +125,20 @@ function App() {
 
         {activeTab === 'about' && <About />}
         {activeTab === 'contact' && <Contact />}
-        {activeTab === 'login' && <Login />}
+        {activeTab === 'login' && <Login onLoginSuccess={handleLoginSuccess} />}
+        {activeTab === 'admin' && <AdminDashboard />}
 
       </main>
 
-      <Footer />
+      {activeTab !== 'login' && <Footer />}
 
       <Cart 
         isOpen={isCartOpen} 
         setIsOpen={setIsCartOpen} 
         cartItems={cartItems} 
         removeFromCart={removeFromCart}
+        user={user}
+        clearCart={clearCart}
       />
 
       <ProductModal 

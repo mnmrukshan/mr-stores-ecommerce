@@ -1,14 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const ProductModal = ({ product, isOpen, onClose, onAddToCart }) => {
-  const [selectedSize, setSelectedSize] = useState('L'); // default L based on user's screenshot
-  const sizes = ['S', 'M', 'L', 'XL', '2XL'];
+  const [selectedSize, setSelectedSize] = useState('');
+  
+  const isJeans = product?.category === 'Jeans';
+  const sizes = isJeans ? ['29', '30', '31', '32', '33', '34'] : ['S', 'M', 'L', 'XL', '2XL'];
+
+  useEffect(() => {
+    if (product) {
+      setSelectedSize(product.category === 'Jeans' ? '29' : 'L');
+    }
+  }, [product]);
+
+  const [isAdded, setIsAdded] = useState(false);
 
   if (!isOpen || !product) return null;
 
   const handleAddToCart = () => {
     onAddToCart({ ...product, size: selectedSize });
-    onClose();
+    setIsAdded(true);
+    setTimeout(() => {
+      setIsAdded(false);
+      onClose();
+    }, 1500);
   };
 
   return (
@@ -77,9 +91,14 @@ const ProductModal = ({ product, isOpen, onClose, onAddToCart }) => {
 
               <button 
                 onClick={handleAddToCart}
-                className="w-full bg-black text-white py-4 font-bold uppercase tracking-widest hover:bg-gray-900 transition-colors"
+                disabled={isAdded}
+                className={`w-full py-4 font-bold uppercase tracking-widest transition-all duration-300 ${
+                  isAdded 
+                  ? 'bg-emerald-500 text-white cursor-default' 
+                  : 'bg-black text-white hover:bg-gray-900'
+                }`}
               >
-                Add to Cart
+                {isAdded ? 'Style Added!' : 'Add to Cart'}
               </button>
             </div>
 

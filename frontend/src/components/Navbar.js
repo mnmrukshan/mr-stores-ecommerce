@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import productsData from '../data/products.json';
 
-const Navbar = ({ cartCount, setIsCartOpen, activeTab, setActiveTab, selectedCategory, setSelectedCategory, searchQuery, setSearchQuery }) => {
+const Navbar = ({ cartCount, setIsCartOpen, activeTab, setActiveTab, selectedCategory, setSelectedCategory, searchQuery, setSearchQuery, user, onLogout }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   return (
     <nav className="glass-header px-6 md:px-12 py-5 flex justify-between items-center w-full">
@@ -130,15 +130,65 @@ const Navbar = ({ cartCount, setIsCartOpen, activeTab, setActiveTab, selectedCat
           )}
         </button>
 
-        {/* User Icon (Profile Logo) */}
-        <button 
-          onClick={() => setActiveTab('login')}
-          className={`hover:text-white transition-colors ${activeTab === 'login' ? 'text-white' : ''}`}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-          </svg>
-        </button>
+        {/* User Icon (Profile Logo) / User Name */}
+        <div className="flex items-center space-x-4 relative group">
+          {user ? (
+            <>
+              {/* Profile Icon with Hover Effect */}
+              <button 
+                className="flex items-center justify-center w-9 h-9 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/30 transition-all duration-300"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#ccc]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </button>
+
+              {/* Dropdown Menu on Hover */}
+              <div className="absolute top-full right-0 mt-2 w-64 bg-[#111] border border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-50 overflow-hidden">
+                <div className="p-4 bg-white/5 border-b border-white/10">
+                  <p className="text-xs text-white font-bold tracking-widest uppercase">{user.name}</p>
+                  <p className="text-[10px] text-[#666] tracking-wider mt-1">{user.email}</p>
+                </div>
+                
+                <div className="p-2 space-y-1">
+                  <button 
+                    onClick={() => setActiveTab('shop')} // Should link to orders in future
+                    className="w-full text-left px-3 py-2 text-[10px] text-[#aaa] hover:text-white hover:bg-white/5 rounded-lg transition-all tracking-[0.2em] uppercase"
+                  >
+                    My Orders
+                  </button>
+                  
+                  {user.email === 'mnmrukshan22@gmail.com' && (
+                    <button 
+                      onClick={() => setActiveTab('admin')}
+                      className="w-full text-left px-3 py-2 text-[10px] text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/5 rounded-lg transition-all tracking-[0.2em] uppercase"
+                    >
+                      Admin Panel
+                    </button>
+                  )}
+                  
+                  <div className="h-[1px] bg-white/5 mx-2 my-1"></div>
+                  
+                  <button 
+                    onClick={onLogout}
+                    className="w-full text-left px-3 py-2 text-[10px] text-red-500 hover:text-red-400 hover:bg-red-500/5 rounded-lg transition-all tracking-[0.2em] uppercase font-bold"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <button 
+              onClick={() => setActiveTab('login')}
+              className={`hover:text-white transition-colors ${activeTab === 'login' ? 'text-white' : ''}`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </button>
+          )}
+        </div>
       </div>
     </nav>
   );

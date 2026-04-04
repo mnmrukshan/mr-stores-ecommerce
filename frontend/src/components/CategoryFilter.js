@@ -1,6 +1,6 @@
 import React from 'react';
 
-const categories = ["All", "Shirts", "T-Shirts", "Jeans", "Shorts", "Sweaters"];
+const categories = ["All", "Shirts", "T-Shirts", "Jeans", "Bottoms", "Sweaters"];
 
 const CategoryFilter = ({ selectedCategory, setSelectedCategory }) => {
   return (
