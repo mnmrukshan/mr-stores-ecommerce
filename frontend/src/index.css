@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #121212;
+    color: #e5e5e5;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+  }
+}
+
+@layer utilities {
+  .glass-dark {
+    @apply bg-[#1a1a1a]/60 backdrop-blur-md border border-[#333333] shadow-[0_4px_30px_rgba(0,0,0,0.5)];
+  }
+  .glass-card {
+    @apply bg-[#1e1e1e]/60 backdrop-blur-md border border-[#2a2a2a] shadow-xl transition-all duration-300 hover:bg-[#252525]/80 hover:-translate-y-1 hover:border-[#444444];
+  }
+  .glass-header {
+    @apply sticky top-0 z-50 bg-[#121212]/80 backdrop-blur-xl border-b border-[#2a2a2a] shadow-lg transition-colors duration-300;
+  }
+  .primary-btn {
+    @apply bg-[#e63946] hover:bg-[#d62828] text-white font-medium py-3 px-6 transition-colors duration-200 uppercase tracking-wider text-sm;
+  }
+  .pause-animation {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+ .animate-fade-in {
+  animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Fix Webkit Autofill white background in dark mode */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px #121212 inset !important;
+    -webkit-text-fill-color: white !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
